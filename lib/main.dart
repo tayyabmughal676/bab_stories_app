@@ -1,5 +1,6 @@
 import 'package:bab_stories_app/register_providers/register_multi_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
@@ -10,11 +11,14 @@ final getIt = GetIt.instance;
 
 void setupLocator() {
   // Register your services
-  getIt.registerSingleton<NetworkProvider>(NetworkProvider());
+  getIt.registerLazySingleton<NetworkProvider>(() => NetworkProvider());
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // load .env file
+  await dotenv.load(fileName: ".env");
+
   // setup locator for get-it
   setupLocator();
   runApp(

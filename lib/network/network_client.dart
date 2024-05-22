@@ -1,5 +1,6 @@
 import 'package:bab_stories_app/network/models/TopStoriesResponse.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 
 class ApiService {
@@ -17,7 +18,8 @@ class ApiService {
   }) async {
     try {
       var baseUrl = "https://api.nytimes.com/svc/topstories/v2";
-      var apiKey = "5O6peulroucJBb7EIlAO7bHSQWCLaq2I";
+      var apiKey = dotenv.env['APIKEY']; //"5O6peulroucJBb7EIlAO7bHSQWCLaq2I";
+      _logger.i("apiKey:$apiKey");
       var resultUrl = '$baseUrl/$topName.json?api-key=$apiKey';
       _logger.i("resultUrl: $resultUrl");
       final response = await _dio.request(
