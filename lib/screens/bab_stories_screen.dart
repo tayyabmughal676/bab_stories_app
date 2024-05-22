@@ -16,7 +16,10 @@ class BabStoriesScreen extends StatefulWidget {
 }
 
 class _BabStoriesScreenState extends State<BabStoriesScreen> {
-  late NetworkProvider networkProvider;
+  // get it network provider service
+  final getItNetworkProvider = getIt<NetworkProvider>();
+
+  // late NetworkProvider networkProvider;
 
   // search controller
   final searchController = TextEditingController();
@@ -43,11 +46,12 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   void initState() {
     // TODO: implement initState
 
-    networkProvider = NetworkProvider();
-    networkProvider = Provider.of<NetworkProvider>(context, listen: false);
+    // networkProvider = NetworkProvider();
+    // networkProvider = Provider.of<NetworkProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      networkProvider.getTopStories(topName: networkProvider.topName);
+      // networkProvider.getTopStories(topName: networkProvider.topName);
+      getItNetworkProvider.getTopStories(topName: getItNetworkProvider.topName);
     });
 
     super.initState();
@@ -64,14 +68,16 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   Widget build(BuildContext context) {
     Provider.of<NetworkProvider>(context, listen: true);
 
-    // get it network provider service
-    final getItNetworkProvider = getIt<NetworkProvider>();
-
     /// add Listener for search
     searchController.addListener(() {
-      networkProvider.updateSearchText(
+      getItNetworkProvider.updateSearchText(
         value: searchController.text.toString().trim().toLowerCase(),
       );
+
+      //
+      // networkProvider.updateSearchText(
+      //   value: searchController.text.toString().trim().toLowerCase(),
+      // );
     });
 
     return Scaffold(
@@ -105,9 +111,12 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                           child: TextFormField(
                             controller: searchController,
                             onChanged: (value) {
-                              networkProvider.updateSearchText(
+                              getItNetworkProvider.updateSearchText(
                                 value: value,
                               );
+                              // networkProvider.updateSearchText(
+                              //   value: value,
+                              // );
                             },
                             decoration: const InputDecoration(
                               isDense: true,
@@ -139,11 +148,16 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                             FocusScope.of(context).unfocus();
 
                             /// set selected section
-                            networkProvider.topName = value;
+                            // networkProvider.topName = value;
+                            getItNetworkProvider.topName = value;
 
                             /// load section stories
-                            await networkProvider.getTopStories(
-                              topName: networkProvider.topName,
+                            // await networkProvider.getTopStories(
+                            //   topName: networkProvider.topName,
+                            // );
+
+                            await getItNetworkProvider.getTopStories(
+                              topName: getItNetworkProvider.topName,
                             );
                           },
                         ),
@@ -151,8 +165,11 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                           onPressed: () {
                             FocusScope.of(context).unfocus();
 
-                            networkProvider.typeOfView =
-                                !networkProvider.typeOfView;
+                            // networkProvider.typeOfView =
+                            //     !networkProvider.typeOfView;
+
+                            getItNetworkProvider.typeOfView =
+                                !getItNetworkProvider.typeOfView;
                           },
                           icon: Icon(
                             context.read<NetworkProvider>().typeOfView
@@ -172,14 +189,21 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                         ?
 
                         ///List view of stories
-                        networkProvider.typeOfView
+                        // networkProvider.typeOfView
+                        getItNetworkProvider.typeOfView
                             ? buildListView(
                                 snapshot:
-                                    networkProvider.topStoriesResponse.results!)
+                                    // networkProvider.topStoriesResponse.results!
+                                    getItNetworkProvider
+                                        .topStoriesResponse.results!)
                             : buildGridViewList(
                                 snapshot:
-                                    networkProvider.topStoriesResponse.results!)
-                        : networkProvider.isLoading == 1
+                                    // networkProvider.topStoriesResponse.results!
+                                    getItNetworkProvider
+                                        .topStoriesResponse.results!)
+                        :
+                        // networkProvider.isLoading == 1
+                        getItNetworkProvider.isLoading == 1
                             ? const Text("Error")
                             : const Center(
                                 child: CircularProgressIndicator(
@@ -200,11 +224,16 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   Widget buildListView({
     required List<Results> snapshot,
   }) {
+    // final searchResult =
+    //     networkProvider.filteredByTitleOrAuthor(results: snapshot);
     final searchResult =
-        networkProvider.filteredByTitleOrAuthor(results: snapshot);
+        getItNetworkProvider.filteredByTitleOrAuthor(results: snapshot);
     debugPrint("Filtered Result: $searchResult");
 
-    return networkProvider.searchText.isEmpty
+    // return networkProvider.searchText.isEmpty
+    //     ? listView(snapshot: snapshot)
+    //     : listView(snapshot: searchResult);
+    return getItNetworkProvider.searchText.isEmpty
         ? listView(snapshot: snapshot)
         : listView(snapshot: searchResult);
   }
@@ -213,11 +242,17 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   Widget buildGridViewList({
     required List<Results> snapshot,
   }) {
+    // final searchResult =
+    //     networkProvider.filteredByTitleOrAuthor(results: snapshot);
     final searchResult =
-        networkProvider.filteredByTitleOrAuthor(results: snapshot);
+        getItNetworkProvider.filteredByTitleOrAuthor(results: snapshot);
     debugPrint("Filtered Result: $searchResult");
 
-    return networkProvider.searchText.isEmpty
+    // return networkProvider.searchText.isEmpty
+    //     ? gridViewList(snapshot: snapshot)
+    //     : gridViewList(snapshot: searchResult);
+
+    return getItNetworkProvider.searchText.isEmpty
         ? gridViewList(snapshot: snapshot)
         : gridViewList(snapshot: searchResult);
   }
