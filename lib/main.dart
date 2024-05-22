@@ -1,18 +1,9 @@
+import 'package:bab_stories_app/features/news_feature/presentation/screens/bab_stories_screen.dart';
 import 'package:bab_stories_app/register_providers/register_multi_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-
-import 'providers/NetworkProvider.dart';
-import 'screens/bab_stories_screen.dart';
-
-final getIt = GetIt.instance;
-
-void setupLocator() {
-  // Register your services
-  getIt.registerLazySingleton<NetworkProvider>(() => NetworkProvider());
-}
+import 'features/news_feature/feature_injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

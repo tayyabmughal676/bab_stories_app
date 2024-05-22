@@ -1,9 +1,8 @@
-import 'package:bab_stories_app/network/network_client.dart';
+import 'package:bab_stories_app/features/news_feature/data/network/network_client.dart';
+import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-
-import '../network/models/TopStoriesResponse.dart';
 
 class NetworkProvider with ChangeNotifier implements ReassembleHandler {
   TopStoriesResponse topStoriesResponse = TopStoriesResponse();

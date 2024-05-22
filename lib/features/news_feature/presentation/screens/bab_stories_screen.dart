@@ -1,8 +1,8 @@
-import 'package:bab_stories_app/main.dart';
-import 'package:bab_stories_app/network/models/TopStoriesResponse.dart';
-import 'package:bab_stories_app/providers/NetworkProvider.dart';
-import 'package:bab_stories_app/widgets/story_grid_card.dart';
-import 'package:bab_stories_app/widgets/story_list_card.dart';
+import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
+import 'package:bab_stories_app/features/news_feature/feature_injection.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/providers/NetworkProvider.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/widgets/story_grid_card.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/widgets/story_list_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

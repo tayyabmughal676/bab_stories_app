@@ -1,4 +1,4 @@
-import 'package:bab_stories_app/network/models/TopStoriesResponse.dart';
+import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
