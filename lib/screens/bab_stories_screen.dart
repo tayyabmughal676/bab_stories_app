@@ -62,10 +62,12 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<NetworkProvider>(context, listen: true);
+
+    // get it network provider service
     final getItNetworkProvider = getIt<NetworkProvider>();
 
-    ///context.read<NetworkProvider>();
-
+    /// add Listener for search
     searchController.addListener(() {
       networkProvider.updateSearchText(
         value: searchController.text.toString().trim().toLowerCase(),
@@ -163,7 +165,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                     ),
 
                     const SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
 
                     context.read<NetworkProvider>().isLoading == 2
@@ -194,6 +196,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
     );
   }
 
+  /// Build List View
   Widget buildListView({
     required List<Results> snapshot,
   }) {
@@ -206,6 +209,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
         : listView(snapshot: searchResult);
   }
 
+  /// Build Grid View List
   Widget buildGridViewList({
     required List<Results> snapshot,
   }) {
@@ -218,6 +222,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
         : gridViewList(snapshot: searchResult);
   }
 
+  /// List View
   Widget listView({
     required List<Results> snapshot,
   }) {

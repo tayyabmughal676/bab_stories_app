@@ -18,7 +18,7 @@ class ApiService {
   }) async {
     try {
       var baseUrl = "https://api.nytimes.com/svc/topstories/v2";
-      var apiKey = dotenv.env['APIKEY']; //"5O6peulroucJBb7EIlAO7bHSQWCLaq2I";
+      var apiKey = dotenv.env['APIKEY'];
       _logger.i("apiKey:$apiKey");
       var resultUrl = '$baseUrl/$topName.json?api-key=$apiKey';
       _logger.i("resultUrl: $resultUrl");
@@ -31,7 +31,6 @@ class ApiService {
 
       if (response.statusCode == 429) {
         _logger.e("Error: Failed to load top stories");
-        // throw Exception('Failed to load top stories');
       }
 
       TopStoriesResponse parseJson = TopStoriesResponse.fromJson(response.data);

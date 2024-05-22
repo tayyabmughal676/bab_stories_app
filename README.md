@@ -1,4 +1,4 @@
-# bab_stories_app
+# Bab Stories App
 
 Bab Alomda flutter assessment project
 
