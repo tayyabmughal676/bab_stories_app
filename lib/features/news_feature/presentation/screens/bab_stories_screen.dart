@@ -1,12 +1,10 @@
 import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
 import 'package:bab_stories_app/features/news_feature/feature_injection.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/layouts/grid_view_list.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/layouts/list_view.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/providers/NetworkProvider.dart';
-import 'package:bab_stories_app/features/news_feature/presentation/widgets/story_grid_card.dart';
-import 'package:bab_stories_app/features/news_feature/presentation/widgets/story_list_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'story_detail_screen.dart';
 
 class BabStoriesScreen extends StatefulWidget {
   const BabStoriesScreen({super.key});
@@ -17,9 +15,7 @@ class BabStoriesScreen extends StatefulWidget {
 
 class _BabStoriesScreenState extends State<BabStoriesScreen> {
   // get it network provider service
-  final getItNetworkProvider = getIt<NetworkProvider>();
-
-  // late NetworkProvider networkProvider;
+  late NetworkProvider networkProvider;
 
   // search controller
   final searchController = TextEditingController();
@@ -46,12 +42,12 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   void initState() {
     // TODO: implement initState
 
-    // networkProvider = NetworkProvider();
-    // networkProvider = Provider.of<NetworkProvider>(context, listen: false);
+    networkProvider = NetworkProvider();
+    networkProvider = Provider.of<NetworkProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // networkProvider.getTopStories(topName: networkProvider.topName);
-      getItNetworkProvider.getTopStories(topName: getItNetworkProvider.topName);
+      networkProvider.getTopStories(topName: networkProvider.topName);
+      // getItNetworkProvider.getTopStories(topName: getItNetworkProvider.topName);
     });
 
     super.initState();
@@ -66,18 +62,17 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //Direct Provider
     Provider.of<NetworkProvider>(context, listen: true);
+
+    // Git-It Locator
+    // var getItNetworkProvider = locator<NetworkProvider>();
 
     /// add Listener for search
     searchController.addListener(() {
-      getItNetworkProvider.updateSearchText(
+      networkProvider.updateSearchText(
         value: searchController.text.toString().trim().toLowerCase(),
       );
-
-      //
-      // networkProvider.updateSearchText(
-      //   value: searchController.text.toString().trim().toLowerCase(),
-      // );
     });
 
     return Scaffold(
@@ -111,12 +106,9 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                           child: TextFormField(
                             controller: searchController,
                             onChanged: (value) {
-                              getItNetworkProvider.updateSearchText(
+                              networkProvider.updateSearchText(
                                 value: value,
                               );
-                              // networkProvider.updateSearchText(
-                              //   value: value,
-                              // );
                             },
                             decoration: const InputDecoration(
                               isDense: true,
@@ -148,16 +140,11 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                             FocusScope.of(context).unfocus();
 
                             /// set selected section
-                            // networkProvider.topName = value;
-                            getItNetworkProvider.topName = value;
+                            networkProvider.topName = value;
 
                             /// load section stories
-                            // await networkProvider.getTopStories(
-                            //   topName: networkProvider.topName,
-                            // );
-
-                            await getItNetworkProvider.getTopStories(
-                              topName: getItNetworkProvider.topName,
+                            await networkProvider.getTopStories(
+                              topName: networkProvider.topName,
                             );
                           },
                         ),
@@ -165,14 +152,11 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                           onPressed: () {
                             FocusScope.of(context).unfocus();
 
-                            // networkProvider.typeOfView =
-                            //     !networkProvider.typeOfView;
-
-                            getItNetworkProvider.typeOfView =
-                                !getItNetworkProvider.typeOfView;
+                            networkProvider.typeOfView =
+                                !networkProvider.typeOfView;
                           },
                           icon: Icon(
-                            context.read<NetworkProvider>().typeOfView
+                            networkProvider.typeOfView
                                 ? Icons.view_list_sharp
                                 : Icons.grid_view_sharp,
                             color: Colors.deepPurple,
@@ -185,25 +169,20 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                       height: 8,
                     ),
 
-                    context.read<NetworkProvider>().isLoading == 2
+                    networkProvider.isLoading == 2
                         ?
 
                         ///List view of stories
-                        // networkProvider.typeOfView
-                        getItNetworkProvider.typeOfView
+                        networkProvider.typeOfView
                             ? buildListView(
                                 snapshot:
-                                    // networkProvider.topStoriesResponse.results!
-                                    getItNetworkProvider
-                                        .topStoriesResponse.results!)
+                                    networkProvider.topStoriesResponse.results!,
+                              )
                             : buildGridViewList(
                                 snapshot:
-                                    // networkProvider.topStoriesResponse.results!
-                                    getItNetworkProvider
-                                        .topStoriesResponse.results!)
-                        :
-                        // networkProvider.isLoading == 1
-                        getItNetworkProvider.isLoading == 1
+                                    networkProvider.topStoriesResponse.results!,
+                              )
+                        : networkProvider.isLoading == 1
                             ? const Text("Error")
                             : const Center(
                                 child: CircularProgressIndicator(
@@ -224,118 +203,26 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   Widget buildListView({
     required List<Results> snapshot,
   }) {
-    // final searchResult =
-    //     networkProvider.filteredByTitleOrAuthor(results: snapshot);
     final searchResult =
-        getItNetworkProvider.filteredByTitleOrAuthor(results: snapshot);
+        networkProvider.filteredByTitleOrAuthor(results: snapshot);
+
     debugPrint("Filtered Result: $searchResult");
 
-    // return networkProvider.searchText.isEmpty
-    //     ? listView(snapshot: snapshot)
-    //     : listView(snapshot: searchResult);
-    return getItNetworkProvider.searchText.isEmpty
-        ? listView(snapshot: snapshot)
-        : listView(snapshot: searchResult);
+    return networkProvider.searchText.isEmpty
+        ? ListViewLayout(snapshot: snapshot)
+        : ListViewLayout(snapshot: searchResult);
   }
 
   /// Build Grid View List
   Widget buildGridViewList({
     required List<Results> snapshot,
   }) {
-    // final searchResult =
-    //     networkProvider.filteredByTitleOrAuthor(results: snapshot);
     final searchResult =
-        getItNetworkProvider.filteredByTitleOrAuthor(results: snapshot);
+        networkProvider.filteredByTitleOrAuthor(results: snapshot);
     debugPrint("Filtered Result: $searchResult");
 
-    // return networkProvider.searchText.isEmpty
-    //     ? gridViewList(snapshot: snapshot)
-    //     : gridViewList(snapshot: searchResult);
-
-    return getItNetworkProvider.searchText.isEmpty
-        ? gridViewList(snapshot: snapshot)
-        : gridViewList(snapshot: searchResult);
-  }
-
-  /// List View
-  Widget listView({
-    required List<Results> snapshot,
-  }) {
-    return snapshot.isNotEmpty
-        ? ListView.builder(
-            itemCount: snapshot.length,
-            shrinkWrap: true,
-            physics: const PageScrollPhysics(),
-            itemBuilder: (context, index) {
-              var data = snapshot[index];
-              var title = data.title.toString();
-              var description = data.abstract.toString();
-              var thumbnail = data.multimedia?[0].url.toString();
-
-              return StoryListCard(
-                title: title,
-                description: description,
-                thumbnail: thumbnail ?? "",
-                onPress: () {
-                  FocusScope.of(context).unfocus();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => StoryDetailScreen(
-                        results: data,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          )
-        : const Center(
-            child: Text("No results"),
-          );
-  }
-
-  /// Grid View List
-  Widget gridViewList({
-    required List<Results> snapshot,
-  }) {
-    return snapshot.isNotEmpty
-        ? GridView.builder(
-            itemCount: snapshot.length,
-            shrinkWrap: true,
-            physics: const PageScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // Two items per row
-              crossAxisSpacing: 2.0, // Spacing between columns
-              mainAxisSpacing: 2.0, // Spacing between rows
-              childAspectRatio: 0.7, // Item aspect ratio
-            ),
-            itemBuilder: (context, index) {
-              var data = snapshot[index];
-              var title = data.title.toString();
-              var description = data.abstract.toString();
-              var thumbnail = data.multimedia?[0].url.toString();
-
-              return StoryGridCard(
-                title: title,
-                description: description,
-                thumbnail: thumbnail ?? "",
-                onPress: () {
-                  FocusScope.of(context).unfocus();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => StoryDetailScreen(
-                        results: data,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          )
-        : const Center(
-            child: Text("No results"),
-          );
+    return networkProvider.searchText.isEmpty
+        ? GridViewList(snapshot: snapshot)
+        : GridViewList(snapshot: searchResult);
   }
 }

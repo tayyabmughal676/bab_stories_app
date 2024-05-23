@@ -3,12 +3,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 
+import 'base_url.dart';
+
 class ApiService {
   //Singleton instance
   static final ApiService _apiService = ApiService();
 
   static ApiService get instance => _apiService;
-
   static final _logger = Logger();
   static final _dio = Dio();
 
@@ -17,10 +18,9 @@ class ApiService {
     required String topName,
   }) async {
     try {
-      var baseUrl = "https://api.nytimes.com/svc/topstories/v2";
       var apiKey = dotenv.env['APIKEY'];
       _logger.i("apiKey:$apiKey");
-      var resultUrl = '$baseUrl/$topName.json?api-key=$apiKey';
+      var resultUrl = '${BaseUrl.baseUrl}/$topName.json?api-key=$apiKey';
       _logger.i("resultUrl: $resultUrl");
       final response = await _dio.request(
         resultUrl,
