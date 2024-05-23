@@ -1,3 +1,5 @@
+import 'package:bab_stories_app/core/enums.dart';
+import 'package:bab_stories_app/features/news_feature/data/network/network_connectivity.dart';
 import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
 import 'package:bab_stories_app/features/news_feature/feature_injection.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/layouts/grid_view_list.dart';
@@ -45,9 +47,20 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
     networkProvider = NetworkProvider();
     networkProvider = Provider.of<NetworkProvider>(context, listen: false);
 
+    locator<NetworkConnectivity>().initConnectivity(context: context);
+    locator<NetworkConnectivity>().connectivitySubscription =
+        locator<NetworkConnectivity>()
+            .connectivity
+            .onConnectivityChanged
+            .listen((value) {
+      locator<NetworkConnectivity>().updateConnectionStatus(
+        result: value,
+        context: context,
+      );
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       networkProvider.getTopStories(topName: networkProvider.topName);
-      // getItNetworkProvider.getTopStories(topName: getItNetworkProvider.topName);
     });
 
     super.initState();
@@ -169,7 +182,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                       height: 8,
                     ),
 
-                    networkProvider.isLoading == 2
+                    networkProvider.isLoading == LoadingState.success
                         ?
 
                         ///List view of stories
@@ -182,7 +195,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                                 snapshot:
                                     networkProvider.topStoriesResponse.results!,
                               )
-                        : networkProvider.isLoading == 1
+                        : networkProvider.isLoading == LoadingState.error
                             ? const Text("Error")
                             : const Center(
                                 child: CircularProgressIndicator(

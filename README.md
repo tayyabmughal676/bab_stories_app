@@ -9,4 +9,4 @@ Bab Alomda flutter assessment project
 - Dependency Injection [GetIt]
 - Clean Architecture.
 - Orientation Landscape/Portrait
-- 
+- Network Connectivity Checker
