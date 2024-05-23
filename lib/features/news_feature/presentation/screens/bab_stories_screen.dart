@@ -6,6 +6,7 @@ import 'package:bab_stories_app/features/news_feature/presentation/layouts/grid_
 import 'package:bab_stories_app/features/news_feature/presentation/layouts/list_view.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/providers/NetworkProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class BabStoriesScreen extends StatefulWidget {
@@ -38,8 +39,6 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
     'Opinion',
   ];
 
-  final String _selectedSection = "technology".toLowerCase();
-
   @override
   void initState() {
     // TODO: implement initState
@@ -47,6 +46,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
     networkProvider = NetworkProvider();
     networkProvider = Provider.of<NetworkProvider>(context, listen: false);
 
+    /// initialize connectivity
     locator<NetworkConnectivity>().initConnectivity(context: context);
     locator<NetworkConnectivity>().connectivitySubscription =
         locator<NetworkConnectivity>()
@@ -60,6 +60,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      /// make network call
       networkProvider.getTopStories(topName: networkProvider.topName);
     });
 
@@ -102,7 +103,12 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
-          child: SizedBox(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await networkProvider.getTopStories(
+                topName: networkProvider.topName,
+              );
+            },
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -182,16 +188,17 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
                       height: 8,
                     ),
 
+                    /// check network loading state
                     networkProvider.isLoading == LoadingState.success
                         ?
 
                         ///List view of stories
                         networkProvider.typeOfView
-                            ? buildListView(
+                            ? _buildListView(
                                 snapshot:
                                     networkProvider.topStoriesResponse.results!,
                               )
-                            : buildGridViewList(
+                            : _buildGridViewList(
                                 snapshot:
                                     networkProvider.topStoriesResponse.results!,
                               )
@@ -213,13 +220,12 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   }
 
   /// Build List View
-  Widget buildListView({
+  Widget _buildListView({
     required List<Results> snapshot,
   }) {
     final searchResult =
         networkProvider.filteredByTitleOrAuthor(results: snapshot);
-
-    debugPrint("Filtered Result: $searchResult");
+    locator<Logger>().i("Filtered Result: $searchResult");
 
     return networkProvider.searchText.isEmpty
         ? ListViewLayout(snapshot: snapshot)
@@ -227,12 +233,12 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   }
 
   /// Build Grid View List
-  Widget buildGridViewList({
+  Widget _buildGridViewList({
     required List<Results> snapshot,
   }) {
     final searchResult =
         networkProvider.filteredByTitleOrAuthor(results: snapshot);
-    debugPrint("Filtered Result: $searchResult");
+    locator<Logger>().i("Filtered Result: $searchResult");
 
     return networkProvider.searchText.isEmpty
         ? GridViewList(snapshot: snapshot)

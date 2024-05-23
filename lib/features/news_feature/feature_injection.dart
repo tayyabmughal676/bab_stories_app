@@ -1,3 +1,4 @@
+import 'package:bab_stories_app/core/helping_func.dart';
 import 'package:bab_stories_app/main.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
@@ -13,5 +14,7 @@ void setupLocator() {
   locator.registerLazySingleton<NetworkProvider>(() => NetworkProvider());
   locator.registerLazySingleton<ApiService>(() => ApiService());
   locator.registerLazySingleton<Logger>(() => Logger());
-  locator.registerLazySingleton<NetworkConnectivity>(() => NetworkConnectivity());
+  locator
+      .registerLazySingleton<NetworkConnectivity>(() => NetworkConnectivity());
+  locator.registerLazySingleton<HelpingFunc>(() => HelpingFunc());
 }

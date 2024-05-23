@@ -1,4 +1,5 @@
 import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
+import 'package:bab_stories_app/features/news_feature/feature_injection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
@@ -9,18 +10,17 @@ class ApiService {
   static final ApiService _apiService = ApiService();
 
   static ApiService get instance => _apiService;
-  static final _logger = Logger();
-  static final _dio = Dio();
+  final _dio = Dio();
 
-  // technology
-  static Future<TopStoriesResponse?> getStories({
+  /// get stories
+  Future<TopStoriesResponse?> getStories({
     required String topName,
   }) async {
     try {
       var apiKey = dotenv.env['APIKEY'];
-      _logger.i("apiKey:$apiKey");
+      locator<Logger>().i("apiKey:$apiKey");
       var resultUrl = '${BaseUrl.baseUrl}/$topName.json?api-key=$apiKey';
-      _logger.i("resultUrl: $resultUrl");
+      locator<Logger>().i("resultUrl: $resultUrl");
       final response = await _dio.request(
         resultUrl,
         options: Options(
@@ -28,16 +28,17 @@ class ApiService {
         ),
       );
 
+      /// if request limit exceeded error
       if (response.statusCode == 429) {
-        _logger.e("Error: Failed to load top stories");
+        locator<Logger>().e("Error: Failed to load top stories");
       }
 
       TopStoriesResponse parseJson = TopStoriesResponse.fromJson(response.data);
-      _logger.i("response: ${parseJson.toJson()}");
+      locator<Logger>().i("response: ${parseJson.toJson()}");
 
       return parseJson;
     } on DioException catch (e) {
-      _logger.e("DioExceptionError: $e");
+      locator<Logger>().e("DioExceptionError: $e");
       return null;
     }
   }
