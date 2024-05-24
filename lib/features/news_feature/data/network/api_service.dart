@@ -1,3 +1,4 @@
+import 'package:bab_stories_app/features/news_feature/data/network/rest_client.dart';
 import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
 import 'package:bab_stories_app/features/news_feature/feature_injection.dart';
 import 'package:dio/dio.dart';
@@ -12,15 +13,43 @@ class ApiService {
   static ApiService get instance => _apiService;
   final _dio = Dio();
 
-  /// get stories
+  /// Retrofit call, get stories
+  Future<TopStoriesResponse?> getRestClientStories({
+    required String topName,
+  }) async {
+    try {
+      final client = RestClient(_dio);
+      var apiKey = dotenv.env['APIKEY'];
+      locator<Logger>().i("apiKey:$apiKey");
+
+      final response = await client.getStories(topName, apiKey!);
+      if (response.status == "OK") {
+        locator<Logger>()
+            .i("response: ${response.status}, ${response.results?.length}");
+        locator<Logger>().i("response: ${response.toJson()}");
+        return response;
+      } else {
+        return null;
+      }
+    } on DioException catch (e) {
+      locator<Logger>().e("DioExceptionError: $e");
+      return null;
+    }
+  }
+
+  /// Dio, get stories
   Future<TopStoriesResponse?> getStories({
     required String topName,
   }) async {
     try {
+      //
       var apiKey = dotenv.env['APIKEY'];
       locator<Logger>().i("apiKey:$apiKey");
+      //
       var resultUrl = '${BaseUrl.baseUrl}/$topName.json?api-key=$apiKey';
       locator<Logger>().i("resultUrl: $resultUrl");
+
+      /// dio get request
       final response = await _dio.request(
         resultUrl,
         options: Options(

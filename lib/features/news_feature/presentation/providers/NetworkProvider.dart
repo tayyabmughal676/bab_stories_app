@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class NetworkProvider with ChangeNotifier implements ReassembleHandler {
   TopStoriesResponse topStoriesResponse = TopStoriesResponse();
 
-  // /// Loading = 0 ; 1 = Error; 2 = Success
+  //Loading = 0 ; 1 = Error; 2 = Success
   LoadingState isLoading = LoadingState.loading;
 
   void setLoading({
@@ -50,7 +50,13 @@ class NetworkProvider with ChangeNotifier implements ReassembleHandler {
   }) async {
     try {
       setLoading(value: LoadingState.loading);
-      final response = await ApiService.instance.getStories(topName: topName);
+
+      /// Retrofit client call
+      final response =
+          await ApiService.instance.getRestClientStories(topName: topName);
+
+      ///Dio
+      //final response = await ApiService.instance.getStories(topName: topName);
       if (response != null) {
         topStoriesResponse = response;
         locator<Logger>().i("getTopStories: ${response.results?.length}");
