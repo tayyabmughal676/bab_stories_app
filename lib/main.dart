@@ -8,10 +8,11 @@ import 'features/news_feature/feature_injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // load .env file
+
+  /// load .env file
   await dotenv.load(fileName: ".env");
 
-  // setup locator for get-it
+  /// setup locator for get-it
   setupLocator();
 
   SystemChrome.setPreferredOrientations([

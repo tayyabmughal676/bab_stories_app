@@ -13,4 +13,4 @@ Bab Alomda flutter assessment project
 - Orientation Landscape/Portrait
 - Network Connectivity Checker
 - Pull Refresh Feature
-- Flutter Tests
+- Flutter Tests/Mockito
