@@ -1,30 +1,58 @@
-// This is a basic Flutter widget test.
+// // This is a basic Flutter widget test.
+// //
+// // To perform an interaction with a widget in your test, use the WidgetTester
+// // utility in the flutter_test package. For example, you can send tap and scroll
+// // gestures. You can also use WidgetTester to find child widgets in the widget
+// // tree, read text, and verify that the values of widget properties are correct.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:bab_stories_app/features/news_feature/data/network/network_connectivity.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/providers/NetworkProvider.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/screens/bab_stories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 
-import 'package:bab_stories_app/main.dart';
+// Mock classes for dependencies
+class MockNetworkConnectivity extends Mock implements NetworkConnectivity {}
+
+class MockNetworkProvider extends Mock implements NetworkProvider {}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  final getIt = GetIt.instance;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() {
+    // Register dependencies
+    getIt.registerLazySingleton<NetworkConnectivity>(
+        () => MockNetworkConnectivity());
+    getIt.registerLazySingleton<NetworkProvider>(() => MockNetworkProvider());
+    getIt.registerLazySingleton<Logger>(() => Logger());
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  tearDown(() {
+    getIt.reset();
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets("Network API Call Test", (WidgetTester tester) async {
+    final mockNetworkProvider = getIt<NetworkProvider>() as MockNetworkProvider;
+
+    var anyNamed = "technology";
+    // Mock the network call behavior
+    when(mockNetworkProvider.getTopStories(topName: anyNamed))
+        .thenAnswer((_) async {}); // Provide a behavior for the method
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider<NetworkProvider>.value(
+        value: mockNetworkProvider,
+        child: const MaterialApp(
+          home: BabStoriesScreen(),
+        ),
+      ),
+    );
+
+    // Replace 'technology' with the desired non-null value
+    verify(mockNetworkProvider.getTopStories(topName: anyNamed)).called(1);
   });
 }
