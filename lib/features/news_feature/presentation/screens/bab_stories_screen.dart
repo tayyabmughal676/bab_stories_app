@@ -1,10 +1,10 @@
 import 'package:bab_stories_app/core/enums.dart';
-import 'package:bab_stories_app/features/news_feature/data/network/network_connectivity.dart';
-import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
+import 'package:bab_stories_app/core/network_connectivity.dart';
+import 'package:bab_stories_app/features/news_feature/data/models/TopStoriesResponse.dart';
 import 'package:bab_stories_app/features/news_feature/feature_injection.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/layouts/grid_view_list.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/layouts/list_view.dart';
-import 'package:bab_stories_app/features/news_feature/presentation/providers/NetworkProvider.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/providers/news_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +17,8 @@ class BabStoriesScreen extends StatefulWidget {
 }
 
 class _BabStoriesScreenState extends State<BabStoriesScreen> {
-  // get it network provider service
-  late NetworkProvider networkProvider;
+  // get it story provider service
+  late NewsProvider networkProvider;
 
   // search controller
   final searchController = TextEditingController();
@@ -43,8 +43,8 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   void initState() {
     // TODO: implement initState
 
-    networkProvider = NetworkProvider();
-    networkProvider = Provider.of<NetworkProvider>(context, listen: false);
+    networkProvider = NewsProvider();
+    networkProvider = Provider.of<NewsProvider>(context, listen: false);
 
     /// initialize connectivity
     locator<NetworkConnectivity>().initConnectivity(context: context);
@@ -77,7 +77,7 @@ class _BabStoriesScreenState extends State<BabStoriesScreen> {
   @override
   Widget build(BuildContext context) {
     //Direct Provider
-    Provider.of<NetworkProvider>(context, listen: true);
+    Provider.of<NewsProvider>(context, listen: true);
 
     // Git-It Locator
     // var getItNetworkProvider = locator<NetworkProvider>();

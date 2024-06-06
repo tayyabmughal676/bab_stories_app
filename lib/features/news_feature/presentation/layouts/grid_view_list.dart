@@ -1,4 +1,4 @@
-import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
+import 'package:bab_stories_app/features/news_feature/data/models/TopStoriesResponse.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/screens/story_detail_screen.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/widgets/story_grid_card.dart';
 import 'package:flutter/material.dart';

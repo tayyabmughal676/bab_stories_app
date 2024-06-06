@@ -5,8 +5,8 @@
 // // gestures. You can also use WidgetTester to find child widgets in the widget
 // // tree, read text, and verify that the values of widget properties are correct.
 //
-import 'package:bab_stories_app/features/news_feature/data/network/network_connectivity.dart';
-import 'package:bab_stories_app/features/news_feature/presentation/providers/NetworkProvider.dart';
+import 'package:bab_stories_app/core/network_connectivity.dart';
+import 'package:bab_stories_app/features/news_feature/presentation/providers/news_provider.dart';
 import 'package:bab_stories_app/features/news_feature/presentation/screens/bab_stories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 // Mock classes for dependencies
 class MockNetworkConnectivity extends Mock implements NetworkConnectivity {}
 
-class MockNetworkProvider extends Mock implements NetworkProvider {}
+class MockNetworkProvider extends Mock implements NewsProvider {}
 
 void main() {
   final getIt = GetIt.instance;
@@ -27,7 +27,7 @@ void main() {
     // Register dependencies
     getIt.registerLazySingleton<NetworkConnectivity>(
         () => MockNetworkConnectivity());
-    getIt.registerLazySingleton<NetworkProvider>(() => MockNetworkProvider());
+    getIt.registerLazySingleton<NewsProvider>(() => MockNetworkProvider());
     getIt.registerLazySingleton<Logger>(() => Logger());
   });
 
@@ -36,7 +36,7 @@ void main() {
   });
 
   testWidgets("Network API Call Test", (WidgetTester tester) async {
-    final mockNetworkProvider = getIt<NetworkProvider>() as MockNetworkProvider;
+    final mockNetworkProvider = getIt<NewsProvider>() as MockNetworkProvider;
 
     var anyNamed = "technology";
     // Mock the network call behavior
@@ -44,7 +44,7 @@ void main() {
         .thenAnswer((_) async {}); // Provide a behavior for the method
 
     await tester.pumpWidget(
-      ChangeNotifierProvider<NetworkProvider>.value(
+      ChangeNotifierProvider<NewsProvider>.value(
         value: mockNetworkProvider,
         child: const MaterialApp(
           home: BabStoriesScreen(),

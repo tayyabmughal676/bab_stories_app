@@ -1,5 +1,5 @@
 import 'package:bab_stories_app/core/helping_func.dart';
-import 'package:bab_stories_app/features/news_feature/domain/models/TopStoriesResponse.dart';
+import 'package:bab_stories_app/features/news_feature/data/models/TopStoriesResponse.dart';
 import 'package:bab_stories_app/features/news_feature/feature_injection.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

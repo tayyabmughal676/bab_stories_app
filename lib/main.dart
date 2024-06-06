@@ -12,7 +12,7 @@ void main() async {
   /// load .env file
   await dotenv.load(fileName: ".env");
 
-  /// setup locator for get-it
+  /// setup locor for get-it
   setupLocator();
 
   SystemChrome.setPreferredOrientations([
