@@ -1,6 +1,6 @@
 # Bab Stories App
 
-Bab Alomda flutter assessment project
+Flutter Open Source Project
 
 - Riverpod/Provider
 - Retrofit/Dio
